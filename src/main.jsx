@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AddTask from "./Component/AddTask";
 import Login from "./Component/Login";
 import Task from "./Component/Task";
 import "./index.css";
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/tasks",
         element: <PrivateRoute><Task></Task></PrivateRoute>,
+      },
+      {
+        path: "/add-task",
+        element: <PrivateRoute><AddTask></AddTask></PrivateRoute>,
       }
     ]
   },

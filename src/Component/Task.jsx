@@ -1,9 +1,10 @@
+import TaskBoard from "./TaskBoard";
 
 
 const Task = () => {
     return (
         <div>
-            task
+            <TaskBoard></TaskBoard>
         </div>
     );
 };
