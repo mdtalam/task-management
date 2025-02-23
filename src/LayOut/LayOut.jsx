@@ -12,7 +12,7 @@ const LayOut = () => {
                 <Outlet></Outlet>
             </section>
             <section>
-                <h1>hello</h1>
+        
             </section>
         </div>
     );
