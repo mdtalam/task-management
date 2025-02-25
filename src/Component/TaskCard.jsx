@@ -1,5 +1,4 @@
 import { useDraggable } from "@dnd-kit/core";
-import axios from "axios";
 import { useState } from "react";
 import { FiCheck, FiEdit, FiTrash2, FiX } from "react-icons/fi";
 import Swal from "sweetalert2";
@@ -24,42 +23,31 @@ const TaskCard = ({ task, onDelete, onUpdate }) => {
   // 🔹 Handle Edit Submit
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/tasks/${task._id}`,
-        editedTask
-      );
-      onUpdate(task._id, response.data); // Instantly update UI
-      setIsEditing(false);
-      Swal.fire("Updated!", "Task has been updated successfully.", "success");
-    } catch (error) {
-      console.error("Error updating task:", error);
-      Swal.fire("Error!", "Failed to update task.", "error");
+  
+    // Ensure data is not empty
+    if (!editedTask.title.trim() || !editedTask.description.trim()) {
+      Swal.fire("Error!", "Title and description cannot be empty.", "error");
+      return;
     }
+  
+    onUpdate(task._id, editedTask); // ✅ Calls function from TaskBoard
+    setIsEditing(false);
   };
+  
 
   // 🔹 Handle Delete Task
-  const handleDelete = async () => {
+  const handleDelete = () => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axios.delete(
-            `${import.meta.env.VITE_API_URL}/tasks/${task._id}`
-          );
-          onDelete(task._id); // Instantly update UI
-          Swal.fire("Deleted!", "Task has been deleted.", "success");
-        } catch (error) {
-          console.error("Error deleting task:", error);
-          Swal.fire("Error!", "Failed to delete task.", "error");
-        }
+        onDelete(task._id); // ✅ Calls function from TaskBoard
       }
     });
   };

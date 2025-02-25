@@ -6,7 +6,7 @@ import { AuthContext } from "../Providers/AuthProvider";
 import { saveUserToDb } from "../userInfoSave/utils";
 
 const Login = () => {
-  const { googleSignin, logOut, user,setUser } = useContext(AuthContext);
+  const { googleSignin, logOut, user, setUser } = useContext(AuthContext);
   const [userError, setUserError] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,7 +19,7 @@ const Login = () => {
       const data = await googleSignin();
       // Save user data to database
       await saveUserToDb(data?.user);
-      setUser(data.user)
+      setUser(data.user);
       Swal.fire({
         position: "center",
         icon: "success",
@@ -34,8 +34,13 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
+    <div
+      className="flex justify-center items-center min-h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: "url('https://i.ibb.co.com/Q35p5FzH/kelly-sikkema-1b-Eni1-Bj-K9w-unsplash.jpg')",
+      }}
+    >
+      <div className="bg-opacity-10 p-6 rounded-lg shadow-lg text-center w-80">
         {user ? (
           <div>
             <img
@@ -43,8 +48,8 @@ const Login = () => {
               alt={user?.displayName}
               className="w-20 h-20 rounded-full mx-auto mb-4"
             />
-            <h2 className="text-xl font-semibold">{user.displayName}</h2>
-            <p className="text-gray-600">{user.email}</p>
+            <h2 className="text-xl text-white font-semibold">{user.displayName}</h2>
+            <p className="text-white">{user.email}</p>
             <button
               onClick={logOut}
               className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -54,8 +59,8 @@ const Login = () => {
           </div>
         ) : (
           <div>
-            <h2 className="text-2xl font-semibold">Sign in</h2>
-            <p className="text-gray-500 mt-2">Access your task manager</p>
+            <h2 className="text-2xl font-semibold text-white">Sign in</h2>
+            <p className="text-gray-200 mt-2">Access your task manager</p>
             <button
               onClick={handleGoogleLogin}
               className="mt-4 flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 w-full justify-center"

@@ -48,8 +48,7 @@ const TaskBoard = () => {
       )
     );
   
-    axios
-      .patch(`${import.meta.env.VITE_API_URL}/tasks/${taskId}`, updatedTask)
+    axios.patch(`${import.meta.env.VITE_API_URL}/tasks/${taskId}`, updatedTask)
       .then(() => {
         Swal.fire({
           icon: "success",
@@ -104,8 +103,7 @@ const TaskBoard = () => {
           });
         });
 
-        axios
-          .patch(`${import.meta.env.VITE_API_URL}/tasks/reorder`, {
+        axios.patch(`${import.meta.env.VITE_API_URL}/tasks/reorder`, {
             reorderedTasks: updatedCategoryTasks,
           })
           .catch((err) => console.error("Error reordering tasks:", err));

@@ -18,6 +18,7 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-6">
           <Link to="/" className="text-white hover:text-gray-200">Home</Link>
+          <Link to="/all-task" className="text-white hover:text-gray-200">All Task</Link>
           <Link to="/tasks" className="text-white hover:text-gray-200">My Tasks</Link>
           <Link to="/add-task" className="text-white hover:text-gray-200">Add Task</Link>
         </div>
