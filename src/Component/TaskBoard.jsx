@@ -9,19 +9,30 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert2
+import { AuthContext } from "../Providers/AuthProvider"; // ✅ Import Auth Context
 import TaskColumn from "./TaskColumn";
 
 const TaskBoard = () => {
+  const { user } = useContext(AuthContext); // ✅ Get logged-in user info
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user?.email) return; // ✅ Ensure user is logged in
+
     axios
-      .get(`${import.meta.env.VITE_API_URL}/tasks`)
-      .then((res) => setTasks(res.data))
-      .catch((err) => console.error("Error fetching tasks:", err));
-  }, []);
+      .get(`${import.meta.env.VITE_API_URL}/tasks?email=${user.email}`)
+      .then((res) => {
+        setTasks(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching tasks:", err);
+        setLoading(false);
+      });
+  }, [user?.email]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 10 } }),
@@ -30,24 +41,26 @@ const TaskBoard = () => {
   );
 
   // ✅ Handle Task Update
-  const handleTaskUpdate = async (taskId, updatedTask) => {
-    try {
-      await axios.patch(`${import.meta.env.VITE_API_URL}/tasks/${taskId}`, updatedTask);
-      setTasks((prevTasks) =>
-        prevTasks.map((task) => (task._id === taskId ? { ...task, ...updatedTask } : task))
-      );
-
-      Swal.fire({
-        icon: "success",
-        title: "Task Updated",
-        text: "The task has been successfully updated!",
-        timer: 2000,
-      });
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
+  const handleTaskUpdate = (taskId, updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task._id === taskId ? { ...task, ...updatedTask } : task
+      )
+    );
+  
+    axios
+      .patch(`${import.meta.env.VITE_API_URL}/tasks/${taskId}`, updatedTask)
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Task Updated",
+          text: "The task has been successfully updated!",
+          timer: 2000,
+        });
+      })
+      .catch((error) => console.error("Error updating task:", error));
   };
-
+  
   // ✅ Handle Task Deletion
   const handleTaskDelete = async (taskId) => {
     try {
@@ -100,6 +113,8 @@ const TaskBoard = () => {
     }
   };
 
+  if (loading) return <p className="text-center text-gray-500">Loading tasks...</p>;
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
       <div className="max-w-6xl mx-auto p-6">
@@ -111,8 +126,8 @@ const TaskBoard = () => {
               key={category}
               category={category}
               tasks={tasks.filter((task) => task.category === category)}
-              onUpdate={handleTaskUpdate} // ✅ Pass onUpdate
-              onDelete={handleTaskDelete} // ✅ Pass onDelete
+              onUpdate={handleTaskUpdate}
+              onDelete={handleTaskDelete}
             />
           ))}
         </div>

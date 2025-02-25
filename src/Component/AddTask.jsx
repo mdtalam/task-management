@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Swal from "sweetalert2"; // Import SweetAlert2
+import { AuthContext } from "../Providers/AuthProvider";
 
 const AddTaskForm = ({ onTaskAdded }) => {
   const [title, setTitle] = useState("");
@@ -9,6 +10,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
   const [priority, setPriority] = useState("Medium");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const {user} = useContext(AuthContext)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +23,14 @@ const AddTaskForm = ({ onTaskAdded }) => {
       return;
     }
   
-    const newTask = { title, description, category, priority, timestamp: new Date().toISOString() };
+    const newTask = { 
+      title, 
+      description, 
+      category, 
+      priority, 
+      timestamp: new Date().toISOString(), 
+      email: user?.email // Include user email
+    };
   
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/tasks`, newTask);
@@ -32,7 +41,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
         setCategory("To-Do");
         setPriority("Medium");
         setError("");
-
+  
         // ✅ Show success alert
         Swal.fire({
           icon: "success",
@@ -41,7 +50,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
           timer: 2000, // Auto-close after 2 seconds
           showConfirmButton: false,
         });
-
+  
         if (typeof onTaskAdded === "function") {
           onTaskAdded(); // Refresh task list
         } else {
@@ -57,6 +66,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
   
     setLoading(false);
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-5 rounded-lg shadow-lg max-w-md mx-auto">

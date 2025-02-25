@@ -16,7 +16,12 @@ const TaskColumn = ({ category, tasks, onUpdate, onDelete }) => {
       <h2 className="text-lg font-semibold mb-3">{category}</h2>
       {tasks.length > 0 ? (
         tasks.map((task) => (
-          <TaskCard key={task._id} task={task} onUpdate={onUpdate} onDelete={onDelete} />
+          <TaskCard 
+            key={task._id} 
+            task={task} 
+            onUpdate={onUpdate}  // ✅ Pass the update function
+            onDelete={onDelete}  // ✅ Pass the delete function
+          />
         ))
       ) : (
         <p className="text-gray-500 text-center">No tasks</p>
